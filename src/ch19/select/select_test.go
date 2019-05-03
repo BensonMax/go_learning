@@ -1,4 +1,4 @@
-package concurrency
+package select_test
 
 import (
 	"fmt"
@@ -9,17 +9,6 @@ import (
 func service() string {
 	time.Sleep(time.Millisecond * 50)
 	return "Done"
-}
-
-func otherTask() {
-	fmt.Println("working on something else")
-	time.Sleep(time.Millisecond * 100)
-	fmt.Println("Task is done.")
-}
-
-func TestService(t *testing.T) {
-	fmt.Println(service())
-	otherTask()
 }
 
 func AsyncService() chan string {
@@ -34,10 +23,12 @@ func AsyncService() chan string {
 	return retCh
 }
 
-//
-func TestAsynService(t *testing.T) {
-	retCh := AsyncService()
-	otherTask()
-	fmt.Println(<-retCh)
-	time.Sleep(time.Second * 1)
+func TestSelect(t *testing.T) {
+	//通过select 实现多路选择和超市控制
+	select {
+	case ret := <-AsyncService():
+		t.Log(ret)
+	case <-time.After(time.Millisecond * 100): //时间控制，当时间超过100ms 后自动执行下一语句
+		t.Error("time out")
+	}
 }

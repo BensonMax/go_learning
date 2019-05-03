@@ -12,16 +12,18 @@ func dataProducer(ch chan int, wg *sync.WaitGroup) {
 			ch <- i
 		}
 		close(ch)
-
 		wg.Done()
 	}()
-
 }
 
 func dataReceiver(ch chan int, wg *sync.WaitGroup) {
 	go func() {
+		//for i :=0; i < 10; i ++{
+		//	data := <-ch
+		//	fmt.Println(data)
+		//}
 		for {
-			if data, ok := <-ch; ok {
+			if data, ok := <-ch; ok { // 用data 接口 chan 里面的值，同时判断channel 是否关闭
 				fmt.Println(data)
 			} else {
 				break
@@ -29,7 +31,6 @@ func dataReceiver(ch chan int, wg *sync.WaitGroup) {
 		}
 		wg.Done()
 	}()
-
 }
 
 func TestCloseChannel(t *testing.T) {
@@ -39,8 +40,8 @@ func TestCloseChannel(t *testing.T) {
 	dataProducer(ch, &wg)
 	wg.Add(1)
 	dataReceiver(ch, &wg)
-	// wg.Add(1)
-	// dataReceiver(ch, &wg)
+	wg.Add(1)
+	dataReceiver(ch, &wg)
 	wg.Wait()
 
 }
