@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+/*
+对象池
+buffer channel
+取 ------ 归还
+*/
+
 type ReusableObj struct {
 }
 
@@ -19,6 +25,10 @@ func NewObjPool(numOfObj int) *ObjPool {
 		objPool.bufChan <- &ReusableObj{}
 	}
 	return &objPool
+	//for i := 0; i < numOfObj; i++ {
+	//	objPool.bufChan <- &ReusableObj{}
+	//}
+	//return &objPool
 }
 
 func (p *ObjPool) GetObj(timeout time.Duration) (*ReusableObj, error) {

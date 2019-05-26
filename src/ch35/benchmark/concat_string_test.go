@@ -2,9 +2,8 @@ package benchmark_test
 
 import (
 	"bytes"
-	"testing"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestConcatStringByAdd(t *testing.T) {

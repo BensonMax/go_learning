@@ -6,21 +6,22 @@ import (
 	"time"
 )
 
+//对channel 方法，判断
 func isCancelled(cancelChan chan struct{}) bool {
 	select {
 	case <-cancelChan:
-		return true
+		return true //如果是cancelChan 返回true
 	default:
-		return false
+		return false //默认返回 false
 	}
 }
 
 func cancel_1(cancelChan chan struct{}) {
-	cancelChan <- struct{}{}
+	cancelChan <- struct{}{} //将一个空结构 写入Struct{}，传递给 cancelChan
 }
 
 func cancel_2(cancelChan chan struct{}) {
-	close(cancelChan)
+	close(cancelChan) //调用广播方法结束 cancelChan
 }
 
 func TestCancel(t *testing.T) {
@@ -36,6 +37,15 @@ func TestCancel(t *testing.T) {
 			fmt.Println(i, "Cancelled")
 		}(i, cancelChan)
 	}
+	//cancel_1(cancelChan)  //输出 4 Cancelled
 	cancel_2(cancelChan)
+	/*
+		输出
+		1 Cancelled
+		4 Cancelled
+		0 Cancelled
+		2 Cancelled
+		3 Cancelled
+	*/
 	time.Sleep(time.Second * 1)
 }
